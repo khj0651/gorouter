@@ -115,7 +115,7 @@ func (c *Config) Process() {
 	var err error
 
         if c.StartResponseDelayIntervalInSeconds > c.DropletStaleThresholdInSeconds {
-          panic("StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
+                panic("StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
         }
 
 	c.PruneStaleDropletsInterval = time.Duration(c.PruneStaleDropletsIntervalInSeconds) * time.Second
