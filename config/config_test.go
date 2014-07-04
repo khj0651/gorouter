@@ -118,8 +118,8 @@ access_log: "/tmp/access_log"
 	})
 
 	Describe("Process", func() {
-		Context("When StartResponseDelayInterval is greater than DropletStaleThreshold", func() {		
-			It("panics", func() {
+		Context("Validate Parameters", func() {		
+			It("panics when StartResponseDelayInterval is greater than DropletStaleThreshold", func() {
 				var b = []byte(`
 droplet_stale_threshold: 14
 start_response_delay_interval: 15
