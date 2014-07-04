@@ -144,7 +144,7 @@ start_response_delay_interval: 15
 `)
 
 			config.Initialize(b)
-			Ω(config.Process).Should(Panic(),"StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
+			Ω(config.Process).Should(Panic(), "StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
 		})
 
 		Describe("Timeout", func() {
