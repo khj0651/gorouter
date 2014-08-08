@@ -163,4 +163,3 @@ func InitConfigFromFile(path string) *Config {
 
 	return c
 }
-
