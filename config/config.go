@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/cloudfoundry-incubator/candiedyaml"
 	vcap "github.com/cloudfoundry/gorouter/common"
+	steno "github.com/cloudfoundry/gosteno"
 
 	"io/ioutil"
 	"time"
@@ -103,6 +104,8 @@ var defaultConfig = Config{
 	StartResponseDelayIntervalInSeconds:  5,
 }
 
+var log = steno.NewLogger("config.logger")
+
 func DefaultConfig() *Config {
 	c := defaultConfig
 
@@ -114,15 +117,16 @@ func DefaultConfig() *Config {
 func (c *Config) Process() {
 	var err error
 
-	if c.StartResponseDelayIntervalInSeconds > c.DropletStaleThresholdInSeconds {
-		panic("StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
-	}
-
 	c.PruneStaleDropletsInterval = time.Duration(c.PruneStaleDropletsIntervalInSeconds) * time.Second
 	c.DropletStaleThreshold = time.Duration(c.DropletStaleThresholdInSeconds) * time.Second
 	c.PublishActiveAppsInterval = time.Duration(c.PublishActiveAppsIntervalInSeconds) * time.Second
 	c.StartResponseDelayInterval = time.Duration(c.StartResponseDelayIntervalInSeconds) * time.Second
 	c.EndpointTimeout = time.Duration(c.EndpointTimeoutInSeconds) * time.Second
+
+	if c.StartResponseDelayInterval > c.DropletStaleThreshold {
+		c.DropletStaleThreshold = c.StartResponseDelayInterval
+		log.Warnf("DropletStaleThreshold(%s) is set equal to StartResponseDelayInterval(%s)", c.DropletStaleThreshold, c.StartResponseDelayInterval)
+	}
 
 	drain := c.DrainTimeoutInSeconds
 	if drain == 0 {
@@ -159,3 +163,4 @@ func InitConfigFromFile(path string) *Config {
 
 	return c
 }
+

@@ -118,18 +118,6 @@ access_log: "/tmp/access_log"
 	})
 
 	Describe("Process", func() {
-		Context("Validate Parameters", func() {		
-			It("panics when StartResponseDelayInterval is greater than DropletStaleThreshold", func() {
-				var b = []byte(`
-droplet_stale_threshold: 14
-start_response_delay_interval: 15
-`)
-
-				config.Initialize(b)
-				Ω(config.Process).Should(Panic(), "StartResponseDelayInterval cannot be greater than DropletStaleThreshold.")
-			})
-		})	
-
 		It("converts intervals to durations", func() {
 			var b = []byte(`
 publish_start_message_interval: 1
@@ -148,6 +136,21 @@ start_response_delay_interval: 15
 			Ω(config.PublishActiveAppsInterval).To(Equal(4 * time.Second))
 			Ω(config.StartResponseDelayInterval).To(Equal(15 * time.Second))
 		})
+
+                Context("When StartResponseDelayInterval is greater than DropletStaleThreshold", func() {
+                        It("sets DropletStaleThreshold to equal StartResponseDelayInterval", func() {
+                                var b = []byte(`
+droplet_stale_threshold: 14
+start_response_delay_interval: 15
+`)
+
+                                config.Initialize(b)
+                                config.Process()
+
+                                Ω(config.DropletStaleThreshold).To(Equal(15 * time.Second))
+                                Ω(config.StartResponseDelayInterval).To(Equal(15 * time.Second))
+                        })
+                })
 
 		Describe("Timeout", func() {
 			It("converts timeouts to a duration", func() {
