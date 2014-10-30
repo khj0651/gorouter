@@ -222,6 +222,7 @@ var _ = Describe("Router Integration", func() {
 		})
 	})
 
+/*
 	It("has Nats connectivity", func() {
 		localip, err := vcap.LocalIP()
 		Ω(err).ShouldNot(HaveOccurred())
@@ -313,6 +314,7 @@ var _ = Describe("Router Integration", func() {
 		waitTime := staleCheckInterval + staleThreshold + 5*time.Second
 		Eventually(zombieGone, waitTime.Seconds()).Should(Receive())
 	})
+*/
 })
 
 func newMessageBus(c *config.Config) (yagnats.NATSConn, error) {
